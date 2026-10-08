@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>ToDo Tracker</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        li { margin-bottom: 12px; }
+        form.inline { display: inline; }
+        .subs { margin-left: 15px; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+<h1>ToDo List</h1>
+<ul>
+    <li th:each="task : ${tasks}">
+        <span th:text="${task.title}">title</span>
+        — <span th:text="${task.description}">desc</span>
+        [<span th:text="${task.category}">cat</span>,
+        <span th:text="${task.priority}">prio</span>]
+        (<span th:text="${task.completed ? 'Completed' : 'Pending'}">st</span>)
+        <br>
+        <small th:text="${task.createdAt}">dt</small>
+        <a th:href="@{/deleteTask/{id}(id=${task.id})}"
+           onclick="return confirm('Удалить задачу?');">Delete</a>
+        <form th:action="@{/updateTask/{id}(id=${task.id})}" method="post" class="inline"
+              th:if="${!task.completed}">
+            <input type="hidden" name="completed" value="true">
+            <button type="submit">Mark as Completed</button>
+        </form>
+        <div class="subs" th:if="${!task.subTasks.isEmpty()}">
+            Подзадачи:
+            <div th:each="st : ${task.subTasks}">
+                - <span th:text="${st.description}">sub</span>
+            </div>
+        </div>
+        <form th:action="@{/addSubTask/{taskId}(taskId=${task.id})}" method="post">
+            <input type="text" name="description" placeholder="подзадача" required>
+            <button type="submit">Add SubTask</button>
+        </form>
+    </li>
+</ul>
+
+<h2>Add New Task</h2>
+<form th:action="@{/addTask}" method="post">
+    <label>Title:</label>
+    <input type="text" name="title" required>
+    <label>Description:</label>
+    <input type="text" name="description">
+    <label>Category:</label>
+    <select name="category">
+        <option th:each="c : ${categories}" th:value="${c}" th:text="${c}">c</option>
+    </select>
+    <label>Priority:</label>
+    <select name="priority">
+        <option th:each="p : ${priorities}" th:value="${p}" th:text="${p}">p</option>
+    </select>
+    <button type="submit">Add Task</button>
+</form>
+</body>
+</html>

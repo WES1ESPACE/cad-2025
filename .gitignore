@@ -1,2 +1,8 @@
-.DS_Store
-*.pdf
+﻿.tools/
+**/target/
+**/data/
+**/.idea/
+**/*.iml
+**/.gradle/
+**/local.properties
+**/build/

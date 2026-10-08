@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>ToDo Tracker</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        li { margin-bottom: 8px; }
+        form.inline { display: inline; }
+    </style>
+</head>
+<body>
+<h1>ToDo List</h1>
+<ul>
+    <li th:each="task : ${tasks}">
+        <span th:text="${task.title}">title</span>
+        — <span th:text="${task.description}">desc</span>
+        [<span th:text="${task.category}">cat</span>]
+        (<span th:text="${task.completed ? 'Completed' : 'Pending'}">status</span>)
+        <a th:href="@{/deleteTask/{id}(id=${task.id})}"
+           onclick="return confirm('Удалить эту задачу?');">Delete</a>
+        <form th:action="@{/updateTask/{id}(id=${task.id})}" method="post" class="inline"
+              th:if="${!task.completed}">
+            <input type="hidden" name="completed" value="true">
+            <button type="submit">Mark as Completed</button>
+        </form>
+    </li>
+</ul>
+
+<h2>Add New Task</h2>
+<form th:action="@{/addTask}" method="post">
+    <label for="title">Title:</label>
+    <input type="text" id="title" name="title" required>
+    <label for="description">Description:</label>
+    <input type="text" id="description" name="description">
+    <label for="category">Category:</label>
+    <select id="category" name="category">
+        <option th:each="c : ${categories}" th:value="${c}" th:text="${c}">cat</option>
+    </select>
+    <button type="submit">Add Task</button>
+</form>
+</body>
+</html>
